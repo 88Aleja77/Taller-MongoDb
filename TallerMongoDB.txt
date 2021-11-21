@@ -1,0 +1,149 @@
+use LasArrieritas
+'switched to db LasArrieritas'
+db.vehiculos.insertMany([
+    {
+        marca: "chevrolet",
+        modelo: "beat",
+        precio:41290000,
+        stock: 20,
+        modelo_date: "2019-12-09"
+    },
+    {
+        marca: "chevrolet",
+        modelo: "joy",
+        precio:45990000,
+        stock: 30,
+        modelo_date: "2020-12-05"
+    },
+    {
+        marca: "chevrolet",
+        modelo: "traverse",
+        precio:185990000,
+        stock: 5,
+        modelo_date: "2021-12-08"
+    },
+    {
+        marca: "chevrolet",
+        modelo: "captiva",
+        precio:95990000,
+        stock: 10,
+        modelo_date: "2021-12-06"
+    },
+    {
+        marca: "renault",
+        modelo: "kwid",
+        precio:39300000,
+        stock: 20,
+        modelo_date: "2021-12-07"
+    },
+    {
+        marca: "renault",
+        modelo: "sandero",
+        precio:65990000,
+        stock: 15,
+        modelo_date: "2020-12-09"
+    },
+    {
+        marca: "renault",
+        modelo: "logan",
+        precio:47900000,
+        stock: 20,
+        modelo_date: "2019-12-05"
+    },
+    {
+        marca: "renault",
+        modelo: "koleos",
+        precio:118950000,
+        stock: 10,
+        modelo_date: "2018-12-06"
+    },
+    {
+        marca: "toyota",
+        modelo: "yaris",
+        precio:58000000,
+        stock: 20,
+        modelo_date: "2019-12-05"
+    },
+    {
+        marca: "toyota",
+        modelo: "corolla",
+        precio:68950000,
+        stock: 15,
+        modelo_date: "2020-11-01"
+    },
+    {
+        marca: "toyota",
+        modelo: "prado",
+        precio:146990000,
+        stock: 20,
+        modelo_date: "2021-10-04"
+    },
+    {
+        marca: "toyota",
+        modelo: "hilux",
+        precio:165990000,
+        stock: 10,
+        modelo_date: "2021-07-07"
+    },
+])
+{ acknowledged: true,
+  insertedIds: 
+   { '0': ObjectId("619ac150c06493096b5133ec"),
+     '1': ObjectId("619ac150c06493096b5133ed"),
+     '2': ObjectId("619ac150c06493096b5133ee"),
+     '3': ObjectId("619ac150c06493096b5133ef"),
+     '4': ObjectId("619ac150c06493096b5133f0"),
+     '5': ObjectId("619ac150c06493096b5133f1"),
+     '6': ObjectId("619ac150c06493096b5133f2"),
+     '7': ObjectId("619ac150c06493096b5133f3"),
+     '8': ObjectId("619ac150c06493096b5133f4"),
+     '9': ObjectId("619ac150c06493096b5133f5"),
+     '10': ObjectId("619ac150c06493096b5133f6"),
+     '11': ObjectId("619ac150c06493096b5133f7") } }
+db.vehiculos.find({marca:"toyota",precio:{ $gte:90000000}})
+{ _id: ObjectId("619ac150c06493096b5133f6"),
+  marca: 'toyota',
+  modelo: 'prado',
+  precio: 146990000,
+  stock: 20,
+  modelo_date: '2021-10-04' }
+{ _id: ObjectId("619ac150c06493096b5133f7"),
+  marca: 'toyota',
+  modelo: 'hilux',
+  precio: 165990000,
+  stock: 10,
+  modelo_date: '2021-07-07' }
+db.vehiculos.find({marca:"chevrolet",precio:{ $lte:50000000}})
+{ _id: ObjectId("619ac150c06493096b5133ec"),
+  marca: 'chevrolet',
+  modelo: 'beat',
+  precio: 41290000,
+  stock: 20,
+  modelo_date: '2019-12-09' }
+{ _id: ObjectId("619ac150c06493096b5133ed"),
+  marca: 'chevrolet',
+  modelo: 'joy',
+  precio: 45990000,
+  stock: 30,
+  modelo_date: '2020-12-05' }
+db.vehiculos.find({modelo:"koleos"})
+{ _id: ObjectId("619ac150c06493096b5133f3"),
+  marca: 'renault',
+  modelo: 'koleos',
+  precio: 118950000,
+  stock: 10,
+  modelo_date: '2018-12-06' }
+db.vehiculos.aggregate([{$match:{marca:"renault"}},{$group:{_id:null, totalCantidadRenault:{$sum:"$stock"}}}])
+{ _id: null, totalCantidadRenault: 65 }
+db.vehiculos.find({modelo_date: {$exists:true}}).forEach(function(doc){
+  doc.modelo_date = new Date(doc.modelo_date);
+  db.vehiculos.updateOne({_id:doc._id},{$set:doc})
+})
+db.vehiculos.find({modelo_date: {$gte:new Date("2020-01-01"),$lt:new Date("2020-12-31")}}).forEach(function(doc){
+  doc.precio = (doc.precio)*(1.1);
+  db.vehiculos.updateOne({"_id":doc._id},{$set:doc})
+})
+db.vehiculos.find({modelo_date: {$gte:new Date("2019-01-01"),$lt:new Date("2019-12-31")}}).forEach(function(doc){
+  doc.stock = (doc.stock)+(2);
+  db.vehiculos.updateOne({"_id":doc._id},{$set:doc})
+})
